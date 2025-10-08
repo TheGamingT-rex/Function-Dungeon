@@ -4,9 +4,11 @@ Welcome to the **Function Dungeon Repository**. This repository serves as a comp
 
 ## Available Versions
 
-Function Dungeon has evolved over time, and each version captures a unique stage in its development. Here, we list the versions from the newest to the oldest:
+Function Dungeon has evolved over time, and each version captures a unique stage in its development. Here, we list the versions from the latest to the oldest:
 
 ### Latest Development
+
+Play the latest version here: [play](https://play.unity.com/en/games/12ce2b6b-2df4-4582-b40d-fbe04e165bbd/transeet-function-dungeon)
 
 For the most recent updates and ongoing developments, visit:
 
