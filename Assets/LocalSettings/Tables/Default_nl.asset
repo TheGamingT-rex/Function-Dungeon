@@ -135,6 +135,34 @@ MonoBehaviour:
       Druk op 'E' om ze op te pakken of weer neer te zetten.
     m_Metadata:
       m_Items: []
+  - m_Id: 274019801080287232
+    m_Localized: Genereer een level
+    m_Metadata:
+      m_Items: []
+  - m_Id: 274019896957882368
+    m_Localized: Kamers
+    m_Metadata:
+      m_Items: []
+  - m_Id: 274019934991831040
+    m_Localized: Doodlopende eindes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 274020041468432384
+    m_Localized: Complexiteit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 274020093091926016
+    m_Localized: Leerdoelen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 274020649801895936
+    m_Localized: Genereer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 274020999451660288
+    m_Localized: Terug
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -29,6 +29,7 @@ public class DialogueManager : MonoBehaviour {
             sprites.Enqueue(dialogue.content[i].sprite);
 
             if (dialogue.content[i].localizationOverride.Length != 0) {
+                Debug.Log("Using localization override for " + dialogue.content[i].localizationKey.GetLocalizedString() + " + " + dialogue.content[i].localizationOverride);
                 sentences.Enqueue(LocalizationManager.Localize(dialogue.content[i].localizationOverride, LocalizationTable.QUESTIONS));
             } else sentences.Enqueue(dialogue.content[i].localizationKey.GetLocalizedString());
         }

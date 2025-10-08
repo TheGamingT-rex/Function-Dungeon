@@ -115,6 +115,34 @@ MonoBehaviour:
     m_Key: TUTORIAL_CARRYABLE
     m_Metadata:
       m_Items: []
+  - m_Id: 274019801080287232
+    m_Key: MENU_GENERATEALEVEL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 274019896957882368
+    m_Key: MENU_ROOMS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 274019934991831040
+    m_Key: MENU_DEAD_ENDS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 274020041468432384
+    m_Key: MENU_COMPLEXITY
+    m_Metadata:
+      m_Items: []
+  - m_Id: 274020093091926016
+    m_Key: MENU_LEARNING_GOAL_SECTIONS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 274020649801895936
+    m_Key: MENU_GENERATE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 274020999451660288
+    m_Key: MENU_BACK
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
