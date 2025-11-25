@@ -143,6 +143,10 @@ MonoBehaviour:
     m_Key: MENU_BACK
     m_Metadata:
       m_Items: []
+  - m_Id: 291355760126996480
+    m_Key: NPC_FAILUREMESSAGE_1
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
