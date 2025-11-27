@@ -7,9 +7,15 @@ public class AudioManager : MonoBehaviour
 {
     public Sound[] sounds;
 
+    public Sound[] backgroundSounds;
+    
+    private AudioSource _backgroundAudioSource;
+
     public static AudioManager instance;
 
     public bool themePlaying;
+
+    private bool mutedSounds;
 
     public float[] resetVolume;
 
@@ -51,6 +57,8 @@ public class AudioManager : MonoBehaviour
             s.source.pitch = s.pitch;
             s.source.loop = s.loop;
         }
+        
+        _backgroundAudioSource = gameObject.GetComponent<AudioSource>();
     }
 
     public void Play(string name)
@@ -76,7 +84,7 @@ public class AudioManager : MonoBehaviour
         }
         else
         {
-            s.source.volume = ogVol;
+            if (!mutedSounds) s.source.volume = ogVol;
             Stop(name);
         }
     }
@@ -88,12 +96,38 @@ public class AudioManager : MonoBehaviour
         s.source.volume = resetVolume[i];
     }
 
-    public void StopAllSounds()
+    private void StopAllSounds()
     {
         foreach (Sound s in sounds)
         {
             s.source.Stop();
         }
+    }
+
+    public void MuteSounds()
+    {
+        StopAllSounds();
+        _backgroundAudioSource.Stop();
+        ChangeVolume(0);
+        mutedSounds = true;
+    }
+    
+    public void UnmuteSounds()
+    {
+        _backgroundAudioSource.Play();
+        ChangeVolume(100);
+        mutedSounds = false;
+    }
+
+    public void ChangeVolume(int volume)
+    {
+        var value = volume / 100f;
+        foreach (Sound s in sounds)
+        {
+            s.source.volume = value;
+        }
+        
+        _backgroundAudioSource.volume = value;
     }
 
     private void OnEnable()
