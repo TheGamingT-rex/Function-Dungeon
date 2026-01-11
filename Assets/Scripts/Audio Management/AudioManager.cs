@@ -1,6 +1,6 @@
-﻿using UnityEngine.Audio;
-using UnityEngine;
+﻿using UnityEngine;
 using System;
+using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
@@ -13,11 +13,18 @@ public class AudioManager : MonoBehaviour
 
     public static AudioManager instance;
 
+    [SerializeField] private ImportMusicScript importMusicScript;
+
     public bool themePlaying;
 
     private bool mutedSounds;
 
     public float[] resetVolume;
+
+    private int _currentBackgroundIndex = -1;
+    private Coroutine _backgroundWatcher;
+    private float _backgroundEndTime;
+    private float? _backgroundPausedSince;
 
     private void Awake()
     {
@@ -58,7 +65,10 @@ public class AudioManager : MonoBehaviour
             s.source.loop = s.loop;
         }
         
-        _backgroundAudioSource = gameObject.GetComponent<AudioSource>();
+        _backgroundAudioSource = GetComponent<AudioSource>();
+        importMusicScript.audioSource = _backgroundAudioSource;
+        importMusicScript.GetBackgroundSounds(out backgroundSounds);
+        if (backgroundSounds.Length > 0) PlayBackground(0);
     }
 
     public void Play(string name)
@@ -107,14 +117,14 @@ public class AudioManager : MonoBehaviour
     public void MuteSounds()
     {
         StopAllSounds();
-        _backgroundAudioSource.Stop();
+        StopBackground();
         ChangeVolume(0);
         mutedSounds = true;
     }
     
     public void UnmuteSounds()
     {
-        _backgroundAudioSource.Play();
+        ContinueBackground();
         ChangeVolume(100);
         mutedSounds = false;
     }
@@ -143,5 +153,114 @@ public class AudioManager : MonoBehaviour
     void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
     {
         StopAllSounds();
+    }
+
+    public void PlayBackground(int index)
+    {
+        if (backgroundSounds == null || backgroundSounds.Length == 0) return;
+        index = Mathf.Clamp(index, 0, backgroundSounds.Length - 1);
+        _currentBackgroundIndex = index;
+
+        Sound s = backgroundSounds[index];
+        if (s == null || s.clip == null) return;
+        
+        if (_backgroundWatcher != null)
+        {
+            StopCoroutine(_backgroundWatcher);
+            _backgroundWatcher = null;
+        }
+
+        _backgroundAudioSource.clip = s.clip;
+        _backgroundAudioSource.Play();
+        
+        // calculate realtime end time (remaining length from current play position)
+        _backgroundEndTime = Time.realtimeSinceStartup + (s.clip.length - _backgroundAudioSource.time);
+        _backgroundPausedSince = null;
+
+        _backgroundWatcher = StartCoroutine(BackgroundWatcher());
+        importMusicScript.SetDropDownSelection(index);
+    }
+
+    // Updated BackgroundWatcher (uses realtime end time and extends it while paused)
+    private IEnumerator BackgroundWatcher()
+    {
+        if (_backgroundAudioSource == null || _backgroundAudioSource.clip == null)
+        {
+            _backgroundWatcher = null;
+            yield break;
+        }
+
+        AudioClip clip = _backgroundAudioSource.clip;
+
+        while (Time.realtimeSinceStartup < _backgroundEndTime)
+        {
+            if (_backgroundAudioSource == null || _backgroundAudioSource.clip != clip)
+            {
+                // clip changed or source gone
+                _backgroundWatcher = null;
+                yield break;
+            }
+
+            if (!_backgroundAudioSource.isPlaying)
+            {
+                // start pause timer if not already
+                if (_backgroundPausedSince == null)
+                    _backgroundPausedSince = Time.realtimeSinceStartup;
+            }
+            else
+            {
+                // if we were paused, extend end time by paused duration
+                if (_backgroundPausedSince != null)
+                {
+                    float pausedDuration = Time.realtimeSinceStartup - _backgroundPausedSince.Value;
+                    _backgroundEndTime += pausedDuration;
+                    _backgroundPausedSince = null;
+                }
+            }
+
+            yield return null;
+        }
+
+        // final safety: ensure clip didn't change
+        if (_backgroundAudioSource == null || _backgroundAudioSource.clip != clip)
+        {
+            Debug.Log("BackgroundWatcher: clip changed or source gone at end");
+            _backgroundWatcher = null;
+            yield break;
+        }
+
+        // Wait until playback actually stops (in case of rounding)
+        while (_backgroundAudioSource != null && _backgroundAudioSource.isPlaying)
+        {
+            yield return new WaitForFixedUpdate();
+            Debug.Log("BackgroundWatcher: waiting for playback to stop");
+        }
+
+        _backgroundWatcher = null;
+        PlayNextBackground();
+    }
+
+    private void PlayNextBackground()
+    {
+        if (backgroundSounds == null || backgroundSounds.Length == 0) return;
+        int next = (_currentBackgroundIndex + 1) % backgroundSounds.Length;
+        PlayBackground(next);
+    }
+    
+    private void ContinueBackground()
+    {
+        if (_backgroundAudioSource == null || _backgroundAudioSource.isPlaying) return;
+        _backgroundAudioSource.Play();
+        _backgroundWatcher ??= StartCoroutine(BackgroundWatcher());
+    }
+
+    private void StopBackground()
+    {
+        if (_backgroundWatcher != null)
+        {
+            StopCoroutine(_backgroundWatcher);
+            _backgroundWatcher = null;
+        }
+        if (_backgroundAudioSource != null) _backgroundAudioSource.Stop();
     }
 }
