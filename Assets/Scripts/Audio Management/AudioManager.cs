@@ -191,7 +191,7 @@ public class AudioManager : MonoBehaviour
         importMusicScript.SetDropDownSelection(index);
     }
 
-    // Updated BackgroundWatcher (uses realtime end time and extends it while paused)
+    // BackgroundWatcher (uses realtime end time and extends it while paused)
     private IEnumerator BackgroundWatcher()
     {
         if (_backgroundAudioSource == null || _backgroundAudioSource.clip == null)
@@ -202,7 +202,7 @@ public class AudioManager : MonoBehaviour
 
         AudioClip clip = _backgroundAudioSource.clip;
 
-        while (Time.realtimeSinceStartup < _backgroundEndTime)
+        while (true)
         {
             if (_backgroundAudioSource == null || _backgroundAudioSource.clip != clip)
             {
@@ -227,8 +227,9 @@ public class AudioManager : MonoBehaviour
                     _backgroundPausedSince = null;
                 }
             }
-
-            yield return null;
+            
+            if (_backgroundAudioSource.isPlaying && Time.realtimeSinceStartup >= _backgroundEndTime) break;
+            yield return new WaitForFixedUpdate();
         }
 
         // final safety: ensure clip didn't change
@@ -270,6 +271,7 @@ public class AudioManager : MonoBehaviour
         {
             StopCoroutine(_backgroundWatcher);
             _backgroundWatcher = null;
+            _backgroundPausedSince ??= Time.realtimeSinceStartup;
         }
         if (_backgroundAudioSource != null) _backgroundAudioSource.Stop();
     }

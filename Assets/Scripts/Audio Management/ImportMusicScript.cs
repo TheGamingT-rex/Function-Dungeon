@@ -16,8 +16,7 @@ public class ImportMusicScript : MonoBehaviour
 
     [Tooltip("Default Resources subfolder to load audio from (e.g. place clips in Assets/Resources/Music)")]
     public string resourcesSubfolder = "Music";
-
-    private List<string> musicKeys = new List<string>();
+    
     [NonSerialized] public Dictionary<string, Sound> musicMap;
 
     private void Awake()
@@ -30,14 +29,12 @@ public class ImportMusicScript : MonoBehaviour
     {
         if (map == null) return;
         musicMap = map;
-        musicKeys.Clear();
-        musicKeys.AddRange(map.Keys);
 
         if (musicDropdown == null) return;
         musicDropdown.ClearOptions();
 
         var options = new List<TMP_Dropdown.OptionData>();
-        foreach (var key in musicKeys) options.Add(new TMP_Dropdown.OptionData(key));
+        foreach (var key in musicMap) options.Add(new TMP_Dropdown.OptionData(key.Key));
         musicDropdown.AddOptions(options);
 
         musicDropdown.onValueChanged.RemoveAllListeners();
@@ -57,7 +54,7 @@ public class ImportMusicScript : MonoBehaviour
     }
 
     // Runtime: load all AudioClip assets from the specified Resources subfolder
-    public void PopulateFromResources(string subfolder = null)
+    private void PopulateFromResources(string subfolder = null)
     {
         var folder = string.IsNullOrEmpty(subfolder) ? resourcesSubfolder : subfolder;
         if (string.IsNullOrEmpty(folder)) return;
@@ -67,6 +64,24 @@ public class ImportMusicScript : MonoBehaviour
 
         var map = clips.ToDictionary(c => c.name, c => new Sound { name = c.name, clip = c });
         PopulateFromMap(map);
+    }
+
+    // Called automatically when dropdown value changes
+    private void PlaySelected(int index) 
+    {
+        if (index < 0 || index >= musicMap.Count) return;
+        AudioManager.instance.PlayBackground(index);
+    }
+
+    // Useful for wiring up UI Buttons: set button OnClick to call PlayByName with the song key
+    public void PlayByName(string name)
+    {
+        if (musicMap == null || string.IsNullOrEmpty(name)) return;
+        if (!musicMap.TryGetValue(name, out var sound) || sound == null) return;
+
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
+        audioSource.clip = sound.clip;
+        audioSource.Play();
     }
 
 #if UNITY_EDITOR
@@ -96,22 +111,4 @@ public class ImportMusicScript : MonoBehaviour
         PopulateFromMap(map);
     }
 #endif
-
-    // Called automatically when dropdown value changes
-    public void PlaySelected(int index) 
-    {
-        if (index < 0 || index >= musicKeys.Count) return;
-        AudioManager.instance.PlayBackground(index);
-    }
-
-    // Useful for wiring up UI Buttons: set button OnClick to call PlayByName with the song key
-    public void PlayByName(string name)
-    {
-        if (musicMap == null || string.IsNullOrEmpty(name)) return;
-        if (!musicMap.TryGetValue(name, out var sound) || sound == null) return;
-
-        if (audioSource == null) audioSource = GetComponent<AudioSource>();
-        audioSource.clip = sound.clip;
-        audioSource.Play();
-    }
 }
