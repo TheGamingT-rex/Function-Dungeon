@@ -8,13 +8,7 @@ using UnityEngine.UI;
 public class AudioSliderUpdate : MonoBehaviour
 {
     [SerializeField] private TMP_InputField audioVolumeText;
-    [SerializeField] private Slider audioSlider;
-    private AudioManager audioManager;
-
-    private void Awake()
-    {
-        audioManager = FindObjectOfType<AudioManager>();
-    }
+    public Slider audioSlider;
 
     public void UpdateSlider()
     {
@@ -35,13 +29,13 @@ public class AudioSliderUpdate : MonoBehaviour
             audioVolumeText.text = Mathf.RoundToInt(audioSlider.value).ToString();
         }
         
-        audioManager.ChangeVolume((int)audioSlider.value);
+        AudioManager.instance.ChangeVolume((int)audioSlider.value);
     }
     
     public void UpdateText()
     {
         // Update the text field to match the slider's value.
         audioVolumeText.text = Mathf.RoundToInt(audioSlider.value).ToString();
-        audioManager.ChangeVolume((int)audioSlider.value);
+        AudioManager.instance.ChangeVolume((int)audioSlider.value);
     }
 }

@@ -9,11 +9,14 @@ public class AudioManager : MonoBehaviour
 
     public Sound[] backgroundSounds;
     
-    private AudioSource _backgroundAudioSource;
+    [SerializeField] private AudioSource _backgroundAudioSource;
 
     public static AudioManager instance;
 
     [SerializeField] private ImportMusicScript importMusicScript;
+    [SerializeField] private AudioSliderUpdate audioSlider;
+    [SerializeField] private GameObject muteButton;
+    [SerializeField] private  GameObject unmuteButton;
 
     public bool themePlaying;
 
@@ -65,7 +68,6 @@ public class AudioManager : MonoBehaviour
             s.source.loop = s.loop;
         }
         
-        _backgroundAudioSource = GetComponent<AudioSource>();
         importMusicScript.audioSource = _backgroundAudioSource;
         importMusicScript.GetBackgroundSounds(out backgroundSounds);
         if (backgroundSounds.Length > 0) PlayBackground(0);
@@ -116,6 +118,8 @@ public class AudioManager : MonoBehaviour
 
     public void MuteSounds()
     {
+        muteButton.SetActive(false);
+        unmuteButton.SetActive(true);
         StopAllSounds();
         StopBackground();
         ChangeVolume(0);
@@ -124,13 +128,19 @@ public class AudioManager : MonoBehaviour
     
     public void UnmuteSounds()
     {
+        if (mutedSounds)
+        {
+            muteButton.SetActive(true);
+            unmuteButton.SetActive(false);
+            mutedSounds = false;
+        }
         ContinueBackground();
-        ChangeVolume(100);
-        mutedSounds = false;
+        ChangeVolume((int)audioSlider.audioSlider.value);
     }
 
     public void ChangeVolume(int volume)
     {
+        if (mutedSounds) UnmuteSounds();
         var value = volume / 100f;
         foreach (Sound s in sounds)
         {
