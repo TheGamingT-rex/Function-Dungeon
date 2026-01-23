@@ -141,6 +141,7 @@ public class MathManager : MonoBehaviour {
         icon.sprite = incorrect;
         audioManager.Play("Wrong");
         FailRoom failRoom = FindObjectOfType<FailRoom>();
+        StartCoroutine(closeUI(0f));
         Globals.PlayerController.FallAndTeleport(new Vector2(failRoom.spawnPos.position.x, failRoom.spawnPos.position.y), null);
     }
 

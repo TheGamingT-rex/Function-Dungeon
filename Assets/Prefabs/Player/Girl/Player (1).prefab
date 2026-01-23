@@ -180,7 +180,7 @@ SpriteRenderer:
   m_SpriteSortPoint: 0
 --- !u!95 &5414636946843314725
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -197,7 +197,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!61 &5414636946843314724
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -278,13 +279,14 @@ MonoBehaviour:
   speedY: 5
   directionX: 0
   directionY: 0
+  anim: {fileID: 0}
+  itemHoldPosition: {fileID: 0}
+  carriableSearchRadius: 0.5
+  currentHeldItem: {fileID: 0}
   allowHorizontalInput: 0
   allowVerticalInput: 0
   allowSpaceInput: 0
-  falling: 0
-  currentHeldItem: {fileID: 0}
-  itemHoldPosition: {fileID: 0}
-  dialogueState: 0
+  state: 0
 --- !u!114 &4159802488856034593
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -300,11 +302,6 @@ MonoBehaviour:
   items:
   - {fileID: 0}
   - {fileID: 0}
-  UI:
-  - slots: {fileID: 0}
-    icon: {fileID: 0}
-  - slots: {fileID: 0}
-    icon: {fileID: 0}
 --- !u!114 &3265723394207119974
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -248,7 +248,11 @@ public class PlayerController : Movement {
         StartCoroutine(StartPlayerFall(position));
     }
 
-    IEnumerator StartPlayerFall(Vector2 position) {
+    IEnumerator StartPlayerFall(Vector2 position)
+    {
+        yield return new WaitForSeconds(0.5f);
+        FindObjectOfType<CameraController>().CameraShake();
+        yield return new WaitForSeconds(0.5f);
         GameObject hole = Instantiate(Globals.HolePrefab, transform.position, transform.rotation);
         state = PlayerState.Falling;
         GetComponent<Collider2D>().enabled = false;

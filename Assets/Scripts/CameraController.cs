@@ -16,7 +16,7 @@ public enum CameraState {
 public class CameraController : MonoBehaviour {
     private CameraState state = CameraState.AttachedToPlayer;
     private Camera cam;
-    private Tween tweenMove, tweenOrtho;
+    private Tween tweenMove, tweenOrtho, tweenShake;
     private const float ReattachDuration = 0.5f;
     public float defaultOrthoSize = 3.5f;
 
@@ -65,5 +65,22 @@ public class CameraController : MonoBehaviour {
                 tweenOrtho = cam.DOOrthoSize(defaultOrthoSize, duration).SetEase(Ease.OutCubic);
             }
         }
+    }
+    
+    public void CameraShake(float duration = 1f, float strength = 0.2f, int vibrato = 10, float randomness = 90f, bool fadeOut = true, bool ignoreTimeScale = true)
+    {
+        // stop any existing shake
+        tweenShake?.Kill();
+
+        if (cam == null) cam = GetComponent<Camera>();
+
+        // 2D shake: only X/Y
+        var shakeStrength = new Vector3(strength, strength, 0f);
+
+        // DOShakePosition will return the transform to its original position after finishing
+        tweenShake = cam.transform.DOShakePosition(duration, shakeStrength, vibrato, randomness, false, fadeOut).SetEase(Ease.OutQuad);
+
+        // ignore Unity timeScale (useful when game is paused)
+        if (ignoreTimeScale) tweenShake.SetUpdate(true);
     }
 }
