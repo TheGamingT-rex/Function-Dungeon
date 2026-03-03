@@ -147,6 +147,14 @@ MonoBehaviour:
     m_Key: NPC_FAILUREMESSAGE_1
     m_Metadata:
       m_Items: []
+  - m_Id: 318960626177290240
+    m_Key: NPC_TUTORIAL_FAILROOM_1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 318962475219431424
+    m_Key: NPC_TUTORIAL_FAILROOM_2
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

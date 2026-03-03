@@ -185,6 +185,15 @@ MonoBehaviour:
     m_Localized: O that's a shame, you were so close. Let's try again
     m_Metadata:
       m_Items: []
+  - m_Id: 318960626177290240
+    m_Localized: O finally, another traveller. I answered this question wrong, do
+      you think we could look at it together?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 318962475219431424
+    m_Localized: I had given {0} as answer, but sadly that was wrong
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

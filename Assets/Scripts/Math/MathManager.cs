@@ -8,6 +8,7 @@ using System.IO;
 
 public class MathManager : MonoBehaviour {
     [NonSerialized] public CustomPuzzle customPuzzle;
+    [NonSerialized] public bool inFailRoom;
     internal bool feedback;
 
     internal int questionsAnswered;
@@ -95,16 +96,17 @@ public class MathManager : MonoBehaviour {
             {
                 OnQuestionComplete();
             }
-        } else {
+        }
+        else {
             WrongAnswer();
             wrongAnsw = answers[number].text;
         }
-
+        if (inFailRoom) return;
         StartCoroutine(closeUI(1));
         dialogueManager.EndDialogue();
     }
 
-    //Triggers when the player has succesfully answered a question or executed a puzzle
+    //Triggers when the player has successfully answered a question or executed a puzzle
     public void OnQuestionComplete() {
         foreach (Animator torch in torches) {
             TriggerAnimation.TriggerAnim(torch, "Trigger");
@@ -140,9 +142,21 @@ public class MathManager : MonoBehaviour {
         icon.color = c;
         icon.sprite = incorrect;
         audioManager.Play("Wrong");
-        FailRoom failRoom = FindObjectOfType<FailRoom>();
-        StartCoroutine(closeUI(0f));
-        Globals.PlayerController.FallAndTeleport(new Vector2(failRoom.spawnPos.position.x, failRoom.spawnPos.position.y), null);
+        if (inFailRoom) return;
+        switch (questionsWrong == 1)
+        {
+            case true:
+                FailRoomIntroduction failRoomIntro = FindObjectOfType<FailRoomIntroduction>();
+                StartCoroutine(closeUI(0f));
+                Globals.PlayerController.FallAndTeleport(new Vector2(failRoomIntro.spawnPos.position.x, failRoomIntro.spawnPos.position.y), null);
+                break;
+            case false:
+                FailRoom failRoom = FindObjectOfType<FailRoom>();
+                StartCoroutine(closeUI(0f));
+                Globals.PlayerController.FallAndTeleport(new Vector2(failRoom.spawnPos.position.x, failRoom.spawnPos.position.y), null);
+                break;
+        }
+        icon.sprite = null;
     }
 
     private IEnumerator closeUI(float delayTime) {

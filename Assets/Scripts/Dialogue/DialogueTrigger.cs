@@ -13,8 +13,8 @@ public class DialogueTrigger : MonoBehaviour
             Destroy(this);
         }
     }
-    public void TriggerDialogue()
+    public virtual void TriggerDialogue()
     {
-        FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
+        Globals.DialogueManager.StartDialogue(dialogue);
     }
 }
