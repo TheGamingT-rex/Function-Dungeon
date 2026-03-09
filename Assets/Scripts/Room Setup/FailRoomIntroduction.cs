@@ -1,13 +1,8 @@
-// File: `Assets/Scripts/Room Setup/FailRoomIntroduction.cs`
-
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using System.Linq;
 using Random = UnityEngine.Random;
-using UnityEngine.Localization.SmartFormat.PersistentVariables;
 
 public class FailRoomIntroduction : MonoBehaviour {
     public Transform spawnPos;
@@ -18,7 +13,6 @@ public class FailRoomIntroduction : MonoBehaviour {
     {
         Globals.MathManager.inFailRoom = true;
         Globals.MathManager.displayExerciseUI = false;
-        //Globals.PlayerController.state = PlayerController.PlayerState.InDialogue;
         
         var list = Globals.MathManager.answers;
         List<string> answers = list.Select(question => question.text).ToList();
@@ -55,8 +49,6 @@ public class FailRoomIntroduction : MonoBehaviour {
         Globals.DialogueManager.AddDialogue(answerDialogue);
         Globals.DialogueManager.nextSentence.AddListener(showFeedback.Feedback);
         Debug.Log($"NPC will say: {npcGivenAnswer}");
-        
-        //StartCoroutine(ContinueExerciseAfterDialogue());
     }
     
     public IEnumerator WaitForFeedback()
